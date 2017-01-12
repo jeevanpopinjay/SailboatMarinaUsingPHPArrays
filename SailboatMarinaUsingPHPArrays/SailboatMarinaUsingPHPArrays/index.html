@@ -1,0 +1,97 @@
+<html>
+  <head>
+    <title>Sailboat Marina</title>
+    <style>
+    p {
+      color:blue;
+    }
+    </style>
+  </head>
+  <body>
+    <h1 style="text-align: center;color=grey"> Welcome to the sailboat managment application</h1>
+    <pre>
+
+
+    <form action="phpUpdate.php">
+      <fieldset>
+          SlipNo:     <input type="text" id="SlipNo" placeholder="Slip number"/>
+
+          Type:       <select name="Type">
+                  <option name="EMPTY" value="EMPTY" default>EMPTY</option>
+                  <option name="Catalina" value="Catalina">Catalina</option>
+                  <option name="Morgan" value="Morgan">Morgan</option>
+                  <option name="Hunter" value="Hunter">Hunter</option>
+                </select>
+
+          Year:       <input type="text" id="Year" placeholder="Year"/>
+
+          Length:     <input type="text" id="Length" placeholder="Length"/>
+
+          Paid?:      <select name="Paid">
+                  <option name="EMPTY" value="EMPTY" default>EMPTY</option>
+                  <option name="Paid" value="Yes">Paid</option>
+                  <option name="Unpaid" value="NO">Unpaid</option>
+                </select>
+
+          Motor:      <select name="Motor">
+                  <option name="EMPTY" value="EMPTY" default>EMPTY</option>
+                  <option name="Outboard" value="Outboard">Outboard</option>
+                  <option name="Inboard" value="Inboard">Inboard</option>
+                  <option name="None" value="None">None</option>
+                </select>
+
+          First name: <input type="text" id="Fname" name="Fname" placeholder="Fname"/>
+
+          Last name:  <input type="text" id="Lname" placeholder="Lname"/>
+
+          <button type = "button"  onclick = "doAJAXstuff(this.form)">Submit</button>  <button type = "reset" name="Reset" value="Reset">Reset</button>
+      </fieldset>
+    </form>
+  </pre>
+
+  <p id="thispart"> Output </p>
+
+  <script type = "text/javascript">
+  //function to check if the string is Empty, then I add the value as "EMPTY"
+  function checkEmpty(thetype){
+    if(thetype.value.toString().trim() == "")
+    {
+        thetype.value = "EMPTY";
+    }
+  }
+  
+  //Call phpUpdate.php and provide the input
+  function doAJAXstuff(theform) {
+	//Create request
+    request = new XMLHttpRequest();
+	
+	//Check for empty textfields
+    checkEmpty(theform.Fname);
+    checkEmpty(theform.Lname);
+    checkEmpty(theform.SlipNo);
+    checkEmpty(theform.Year);
+    checkEmpty(theform.Length);
+	
+	//Make a GET request with all the parameters from the form
+    request.open("GET","phpUpdate.php?Fname="+theform.Fname.value+"&"+"Lname="+theform.Lname.value+"&"+"SlipNo="+theform.SlipNo.value+"&"+"Type="+theform.Type.value+"&"+"Year="+theform.Year.value+"&"+"Length="+theform.Length.value+"&"+"Motor="+theform.Motor.value+"&"+"Paid="+theform.Paid.value, true);
+    request.onreadystatechange = function () {
+       if (request.readyState == 4)
+           my_callback();
+     }
+	
+	//Send request
+    request.send();  	
+  }
+  function my_callback() {
+      if (request.status == 200) {
+  	document.getElementById("thispart").innerHTML = request.responseText;
+  	document.getElementById("thispart").style.font = "italic bold 20px arial, serif";
+        //  alert("There wasn't an error, just wanted to let you see how an alert works. Received from the server:\n"+request.responseText);
+      }
+      else if (request.status=404) {
+  	alert("Server was not found: data returned is :\n"+request.responseText);
+      }
+  }
+  </script>
+  </body>
+</html>
